@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
+import json
 from core.events.event_bus import EventBus
 
 class MainInterface:
@@ -52,13 +53,31 @@ class MainInterface:
 
     def _load_history(self):
         """加载历史记录"""
-        # TODO: 从history.json加载历史记录
-        pass
+        try:
+            with open('history.json', 'r', encoding='utf-8') as f:
+                history = json.load(f)
+                for file_path in history:
+                    self.history_listbox.insert(0, file_path)
+        except (FileNotFoundError, json.JSONDecodeError):
+            # 文件不存在或格式错误时初始化空列表
+            self.history_listbox.delete(0, tk.END)
 
     def _add_to_history(self, file_path: str):
         """添加文件到历史记录"""
+        # 如果文件已存在则先移除
+        items = self.history_listbox.get(0, tk.END)
+        if file_path in items:
+            index = items.index(file_path)
+            self.history_listbox.delete(index)
+        
+        # 插入到最前面
         self.history_listbox.insert(0, file_path)
-        # TODO: 保存到history.json
+        
+        # 保存到文件
+        items = self.history_listbox.get(0, tk.END)
+        history = list(items)[:100]  # 最多保存100条记录
+        with open('history.json', 'w', encoding='utf-8') as f:
+            json.dump(history, f, ensure_ascii=False, indent=2)
 
     def run(self):
         """启动主循环"""
