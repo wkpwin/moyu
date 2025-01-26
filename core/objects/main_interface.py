@@ -14,7 +14,13 @@ class MainInterface:
     def _init_ui(self):
         """初始化UI"""
         self.root.title("桌面小说阅读器")
-        self.root.geometry("400x300")
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        
+        # 主界面完全居中
+        x = (screen_width - 400) // 2
+        y = (screen_height - 300) // 2
+        self.root.geometry(f"400x300+{x}+{y}")
         
         # 文件选择按钮
         self.select_button = tk.Button(

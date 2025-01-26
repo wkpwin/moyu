@@ -13,7 +13,12 @@ class ReadingArea:
     def _setup_display(self):
         """初始化显示区域"""
         self.window.title("阅读区域")
-        self.window.geometry("600x400")
+        screen_width = self.window.winfo_screenwidth()
+        screen_height = self.window.winfo_screenheight()
+        # 主界面居中，阅读区在左侧，间隔50px
+        x = (screen_width - 400) // 2 - 600 - 50  # 主界面居中，阅读区在左侧
+        y = (screen_height - 400) // 2  # 中点对齐
+        self.window.geometry(f"600x400+{x}+{y}")
         self.window.attributes('-alpha', 0.9)  # 设置透明度
         self.window.attributes('-topmost', True)  # 置顶
         

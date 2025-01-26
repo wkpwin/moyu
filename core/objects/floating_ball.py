@@ -15,6 +15,8 @@ class FloatingBall:
         self.window.overrideredirect(True)  # 去除窗口边框
         self.window.attributes('-alpha', 0.8)  # 设置透明度
         self.window.attributes('-topmost', True)  # 置顶
+        self.window.lift()  # 提升窗口层级
+        self.window.update_idletasks()  # 强制更新窗口状态
         
         # 悬浮球主体
         self.canvas = tk.Canvas(
@@ -35,7 +37,12 @@ class FloatingBall:
         )
         
         # 初始位置
-        self.window.geometry("50x50+100+100")
+        screen_width = self.window.winfo_screenwidth()
+        screen_height = self.window.winfo_screenheight()
+        # 主界面居中，悬浮球在右侧，间隔50px
+        x = (screen_width - 400) // 2 + 400 + 50  # 主界面居中，悬浮球在右侧
+        y = (screen_height - 50) // 2  # 中点对齐
+        self.window.geometry(f"50x50+{x}+{y}")
 
     def _bind_events(self):
         """绑定事件"""
@@ -52,10 +59,8 @@ class FloatingBall:
 
     def _on_drag_move(self, event):
         """拖动中"""
-        delta_x = event.x - self._drag_data["x"]
-        delta_y = event.y - self._drag_data["y"]
-        x = self.window.winfo_x() + delta_x
-        y = self.window.winfo_y() + delta_y
+        x = self.window.winfo_x() + (event.x - self._drag_data["x"])
+        y = self.window.winfo_y() + (event.y - self._drag_data["y"])
         self.window.geometry(f"+{x}+{y}")
 
     def _on_drag_end(self, event):
